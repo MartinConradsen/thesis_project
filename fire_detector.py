@@ -3,15 +3,14 @@ import time
 import cv2
 import numpy as np
 
-Fire_Reported = 0
-
-cv2.startWindowThread()
-
 picam2 = Picamera2()
-picam2.configure(picam2.create_preview_configuration(main={"format": 'XRGB8888', "size": (640, 480)}))
-picam2.start()
 
-while True:
+def configure_cv2():
+    cv2.startWindowThread()
+    picam2.configure(picam2.create_preview_configuration(main={"format": 'XRGB8888', "size": (640, 480)}))
+    picam2.start()
+
+def find_fire():
     picam2.capture_file("test.jpg")
     img = cv2.imread("test.jpg")
     frame = cv2.resize(img, (640, 480))
@@ -24,21 +23,9 @@ while True:
     upper = np.array(upper, dtype="uint8")
 
     mask = cv2.inRange(hsv, lower, upper)
-
-    output = cv2.bitwise_and(frame, hsv, mask=mask)
-
     no_red = cv2.countNonZero(mask)
 
     if int(no_red) > 15000:
-        Fire_Reported = Fire_Reported + 1
-
-    cv2.imshow("output", output)
-
-    if (Fire_Reported >= 1):
-        break
-
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-print(Fire_Reported)
-cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
+        return True
+    return False

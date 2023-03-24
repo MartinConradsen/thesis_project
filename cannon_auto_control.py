@@ -1,4 +1,5 @@
 import serial.tools.list_ports
+from fire_detector import *
 
 ports = serial.tools.list_ports.comports()
 for port in ports:
@@ -8,10 +9,11 @@ serialInst.baudrate = 9600
 
 fire_detected = False
 
-def find_fire():
-    while (fire_detected == False):
-        # Look for fire - if found, set fire_detected to True
-        if (fire_detected == False):
-            serialInst.write('aaaa'.encode('utf-8'))
-            continue
+def extinguish_fire():
+    configure_cv2()
+    while (not fire_detected):
+        fire_detected = find_fire()
+        serialInst.write('aaaa'.encode('utf-8'))
     serialInst.write('f'.encode('utf-8'))
+
+extinguish_fire()
