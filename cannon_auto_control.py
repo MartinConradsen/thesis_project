@@ -13,7 +13,7 @@ def extinguish_fire():
     configure_cv2()
     while (not fire_detected):
         fire_detected = find_fire()
-        serialInst.write('aaaa'.encode('utf-8'))
+        serialInst.write('aaaaaa'.encode('utf-8'))
     serialInst.write('f'.encode('utf-8'))
 
 extinguish_fire()

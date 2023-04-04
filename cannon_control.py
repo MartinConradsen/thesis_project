@@ -19,6 +19,8 @@ def on_press(key):
             serialInst.write('s'.encode('utf-8'))
         elif (key.char == 'f'):
             serialInst.write('f'.encode('utf-8'))
+        elif (key.char == 'g'):
+            serialInst.write('g'.encode('utf-8'))
     except AttributeError:
         print('special key {0} pressed'.format(
             key))
