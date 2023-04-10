@@ -1,0 +1,231 @@
+#include <Servo.h>
+#define tiltDirPin 2
+#define tiltStepPin 3
+#define turnDirPin 4
+#define turnStepPin 5
+#define stepsPerRevolution 200
+#define buzzerPin 10
+#define DO A5
+#define tiltTurnOffPin 12
+#define rotationTurnOffPin 10
+
+Servo fireServo;
+Servo holdServo;
+int pos = 0;
+
+void setup() {
+  pinMode(tiltDirPin, OUTPUT);
+  pinMode(tiltStepPin, OUTPUT);
+  pinMode(turnDirPin, OUTPUT);
+  pinMode(turnStepPin, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);
+
+  // Make sure tilt motor doesn't get constant power (for overheating reasons)
+  pinMode(tiltTurnOffPin, OUTPUT);
+  digitalWrite(tiltTurnOffPin, LOW);
+
+  // Microphone
+  pinMode(DO, INPUT); 
+
+  // Avoid firing during setup
+  fireServo.attach(11);
+  for (pos = 80; pos <= 130; pos += 1) {
+    fireServo.write(pos);
+    delay(5);
+  }
+
+  // Holding rod init. angle
+  holdServo.attach(13);
+  holdServo.write(30);
+
+  Serial.begin(9600);
+  Serial.println();
+}
+
+void loop() {
+  //int output = analogRead(DO);
+  //Serial.println(output);
+  while (Serial.available() > 0) {
+    char inByte = Serial.read();
+    // Next two lines: to get the int corresponding to the entered char
+    //int number = inByte;
+    //Serial.println(number);
+    if (inByte == 119) { // w
+      tiltOneStepForward();
+    } else if (inByte == 115) { // s
+      tiltOneStepBackwards();
+    } else if (inByte == 97) { // a
+      turnOneStepClockwise();
+    } else if (inByte == 100) { // d
+      turnOneStepCounterClockwise();
+    } else if (inByte == 102) { // f
+      fire();
+    } else if (inByte == 103) { // g
+      resetHoldingRod();
+    } else if (inByte == 104) { // h
+      turnOnTiltMotor();  
+    } else if (inByte == 106) { // j
+      turnOffTiltMotor();
+    } else if (inByte == 107) { // k
+      experimentSetup30deg();
+    } else if (inByte == 109) { // m
+      holdProjectile();
+    }
+  }
+}
+
+void tiltOneStepForward() {
+  digitalWrite(tiltDirPin, LOW);
+  for (int i = 0; i < 10; i++) { // changed from 10 to 1
+    digitalWrite(tiltStepPin, HIGH);
+    delayMicroseconds(1000);
+    digitalWrite(tiltStepPin, LOW);
+    delayMicroseconds(1000);
+  }
+}
+
+void tiltOneStepBackwards() {
+  digitalWrite(tiltDirPin, HIGH);
+  for (int i = 0; i < 10; i++) {
+    digitalWrite(tiltStepPin, HIGH);
+    delayMicroseconds(1000);
+    digitalWrite(tiltStepPin, LOW);
+    delayMicroseconds(1000);
+  }
+}
+
+void turnOneStepClockwise() {
+  digitalWrite(turnDirPin, LOW);
+  for (int i = 0; i < 10; i++) {
+    digitalWrite(turnStepPin, HIGH);
+    delayMicroseconds(1000);
+    digitalWrite(turnStepPin, LOW);
+    delayMicroseconds(1000);
+  }
+}
+
+void turnOneStepCounterClockwise() {
+  digitalWrite(turnDirPin, HIGH);
+    for (int i = 0; i < 10; i++) {
+      digitalWrite(turnStepPin, HIGH);
+      delayMicroseconds(1000);
+      digitalWrite(turnStepPin, LOW);
+      delayMicroseconds(1000);
+    }
+}
+
+void fire() {
+  releaseProjectile();
+  for (pos = 130; pos >= 80; pos -= 1) {
+    fireServo.write(pos);
+    //delay(1);
+  }
+  delay(200);
+  for (pos = 80; pos <= 130; pos += 1) {
+    fireServo.write(pos);
+    delay(1);
+  }
+  delay(200);  
+  resetHoldingRod();
+}
+
+void releaseProjectile() {
+  holdServo.write(60);
+}
+
+void holdProjectile() {
+  holdServo.write(-5);  
+}
+
+void resetHoldingRod() {
+  holdServo.write(30);  
+}
+
+void turnOffTiltMotor() {
+  digitalWrite(tiltTurnOffPin, LOW);  
+}
+
+void turnOnTiltMotor() {
+  digitalWrite(tiltTurnOffPin, HIGH);  
+}
+
+void turnOffRotationMotor() {
+  digitalWrite(rotationTurnOffPin, LOW);  
+}
+
+void turnOnRotationMotor() {
+  digitalWrite(rotationTurnOffPin, HIGH);  
+}
+
+void experimentSetup0deg() {
+  turnOnTiltMotor();
+  delay(20);
+  for (int i = 0; i < 21; i++) {
+    tiltOneStepForward();
+  }
+  delay(1000);
+  fire();
+  delay(1000);
+  turnOffTiltMotor();
+}
+
+void experimentSetupMin15deg() {
+  turnOnTiltMotor();
+  delay(20);
+  for (int i = 0; i < 24; i++) {
+    tiltOneStepForward();
+    delay(5);
+  }
+  delay(1000);
+  fire();
+  delay(1000);
+  turnOffTiltMotor();
+}
+
+void experimentSetupMin30deg() {
+  turnOnTiltMotor();
+  delay(20);
+  for (int i = 0; i < 23; i++) {
+    tiltOneStepForward();
+  }
+  delay(1000);
+  fire();
+  delay(1000);
+  turnOffTiltMotor();
+}
+
+void experimentSetupMin45deg() {
+  turnOnTiltMotor();
+  delay(20);
+  for (int i = 0; i < 26; i++) {
+    tiltOneStepForward();
+  }
+  delay(1000);
+  fire();
+  delay(1000);
+  turnOffTiltMotor();
+}
+
+void experimentSetup15deg() {
+  turnOnTiltMotor();
+  delay(20);
+  for (int i = 0; i < 7; i++) {
+    tiltOneStepForward();
+  }
+  delay(1000);
+  fire();
+  delay(1000);
+  turnOffTiltMotor();
+}
+
+void experimentSetup30deg() {
+  turnOnTiltMotor();
+  delay(20);
+  for (int i = 0; i < 5; i++) {
+    tiltOneStepForward();
+  }
+  delay(1000);
+  fire();
+  delay(1000);
+  turnOffTiltMotor();
+}
