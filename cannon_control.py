@@ -4,7 +4,7 @@ from pynput import keyboard
 ports = serial.tools.list_ports.comports()
 for port in ports:
     print(str(port))
-serialInst = serial.Serial('/dev/cu.usbmodem144201')
+serialInst = serial.Serial('/dev/ttyACM0')
 serialInst.baudrate = 9600
 
 def on_press(key):
