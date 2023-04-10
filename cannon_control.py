@@ -4,7 +4,7 @@ from pynput import keyboard
 ports = serial.tools.list_ports.comports()
 for port in ports:
     print(str(port))
-serialInst = serial.Serial('/dev/cu.usbmodem141201')
+serialInst = serial.Serial('/dev/cu.usbmodem144101')
 serialInst.baudrate = 9600
 
 def on_press(key):
@@ -21,6 +21,14 @@ def on_press(key):
             serialInst.write('f'.encode('utf-8'))
         elif (key.char == 'g'):
             serialInst.write('g'.encode('utf-8'))
+        elif (key.char == 'h'):
+            serialInst.write('h'.encode('utf-8'))
+        elif (key.char == 'j'):
+            serialInst.write('j'.encode('utf-8'))
+        elif (key.char == 'k'):
+            serialInst.write('k'.encode('utf-8'))
+        elif (key.char == 'm'):
+            serialInst.write('m'.encode('utf-8'))
     except AttributeError:
         print('special key {0} pressed'.format(
             key))

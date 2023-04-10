@@ -18,9 +18,16 @@ fire_detected = False
 def extinguish_fire():
     configure_cv2()
     while (not fire_detected):
-        fire_detected = find_fire()
+        if (camera_found_fire()):
+            print("Camera found fire.")
+            if (ir_fire_detected()):
+                print("IR sensors detected fire.")
+                print("Firing projectile.")
+                fire_detected = True
+                serialInst.write('f'.encode('utf-8'))
+                break
+
         serialInst.write('aaaaaa'.encode('utf-8'))
-    serialInst.write('f'.encode('utf-8'))
     #send_text_alert()
 
 def send_text_alert():
@@ -36,8 +43,4 @@ def send_text_alert():
     else:
         print(f"Message failed with error: {responseData['messages'][0]['error-text']}")
 
-#extinguish_fire()
-
-while (True):
-    read_sensors()
-    time.sleep(1)
+extinguish_fire()

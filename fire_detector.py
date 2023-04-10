@@ -8,10 +8,9 @@ picam2 = Picamera2()
 def configure_cv2():
     cv2.startWindowThread()
     picam2.configure(picam2.create_preview_configuration(main={"format": 'XRGB8888', "size": (640, 480)}))
-    picam2.start_preview(Preview.QTGL)
     picam2.start()
 
-def find_fire():
+def camera_found_fire():
     configure_cv2()
     while (True):
         picam2.capture_file("test.jpg")
@@ -38,5 +37,3 @@ def find_fire():
 
             return True
         return False
-
-find_fire()

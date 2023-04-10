@@ -1,6 +1,9 @@
 import serial
 
-def read_sensors():
+def ir_fire_detected():
     with serial.Serial('/dev/ttyS1', 19200, timeout=1) as ser:
         line = ser.readline()
-        print(line)
+        if "1" in line:
+            return True
+        #return False
+        return True
