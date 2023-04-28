@@ -46,8 +46,8 @@ def find_angle_for_distance(height, desired_distance, X, y):
 
 
 # Example usage:
-height = 120
-desired_distance = 200
+height = 100
+desired_distance = 400
 angle = find_angle_for_distance(height, desired_distance, X, y)
 print(
     f"To achieve a distance of {desired_distance} at a height of {height}, you need an angle of {angle} degrees.")
