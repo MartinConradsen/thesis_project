@@ -54,7 +54,7 @@ serialInst.baudrate = 9600
 
 # For cannon movement
 count = 0
-forward = True
+forward = True 
 
 # SMS alert
 client = vonage.Client(key="79267e59", secret="Master23")
@@ -113,8 +113,9 @@ def run(
     screenshot = source.lower().startswith('screen')
     if is_url and is_file:
         source = check_file(source)  # download
-    
-
+    global count
+    global forward
+    global serialInst
 
     # Directories
     save_dir = increment_path(Path(project) / name, exist_ok=exist_ok)  # increment run
@@ -323,6 +324,8 @@ def parse_opt():
     return opt
 
 def send_text_alert():
+    global sms
+
     responseData = sms.send_message(
         {
             "from": "FIRE ALARM",
