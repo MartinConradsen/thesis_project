@@ -1,0 +1,7 @@
+cd Desktop/Yolov5-Fire-Detection/
+
+source ./yolov5-venv/bin/activate
+
+cd yolov5
+
+python detect.py --source 0 --weights ../models/best.pt --conf 0.2
