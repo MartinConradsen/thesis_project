@@ -33,6 +33,9 @@ import os
 import platform
 import sys
 from pathlib import Path
+import serial.tools.list_ports
+import time
+import vonage
 
 import torch
 
@@ -41,6 +44,28 @@ ROOT = FILE.parents[0]  # YOLOv5 root directory
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
+
+# Find Arduino port
+ports = serial.tools.list_ports.comports()
+for port in ports:
+    print(str(port))
+serialInst = serial.Serial('/dev/ttyACM0') # Change this to the port that the Arduino is connected to
+serialInst.baudrate = 9600
+
+# For cannon movement
+count = 0
+forward = True
+
+# SMS alert
+client = vonage.Client(key="79267e59", secret="Master23")
+sms = vonage.Sms(client)
+
+# Hold projectile in place
+serialInst.write('m'.encode('utf-8'))
+time.sleep(0.2)
+# Activate tilt motor
+serialInst.write('h'.encode('utf-8'))
+time.sleep(0.2)
 
 from models.common import DetectMultiBackend
 from utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadScreenshots, LoadStreams
@@ -157,7 +182,7 @@ def run(
             imc = im0.copy() if save_crop else im0  # for save_crop
 
             annotator = Annotator(im0, line_width=line_thickness, example=str(names))
-            if len(det):
+            if len(det): # Fire detected
                 # Rescale boxes from img_size to im0 size
                 det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
 
@@ -186,23 +211,39 @@ def run(
                     if int(cls) == 0:
                         fire_coordinates.append(xyxy)
            
-                        
-            
-            for coords in fire_coordinates:
-                x_mid = (coords[0].item() + coords[2].item())/2
-                y_mid = (coords[1].item() + coords[3].item())/2
-                print("Center: ", x_mid, y_mid)
-                if (x_mid > 270 and x_mid < 370) and (y_mid > 190 and y_mid < 290):
-                    print("Fire detected in center")
-                    break
-                elif (x_mid < 270):
-                    print("Move right")
-                elif (x_mid > 370):
-                    print("Move left")
-                elif (y_mid < 190):
-                    print("Move down")
-                elif (y_mid > 290):
-                    print("Move up")
+                for coords in fire_coordinates:
+                    x_mid = (coords[0].item() + coords[2].item())/2
+                    y_mid = (coords[1].item() + coords[3].item())/2
+                    print("Center: ", x_mid, y_mid) # Print center coordinates of fire
+                    if (x_mid > 270 and x_mid < 370) and (y_mid > 190 and y_mid < 290):
+                        print("Fire detected in center")
+                        serialInst.write('f'.encode('utf-8')) # Fire cannon
+                        time.sleep(1)
+                        serialInst.write('j'.encode('utf-8')) # Stop tilt motor
+                        sys.exit() # Kill program
+                    elif (x_mid < 270):
+                        print("Move left")
+                        serialInst.write('aaaa'.encode('utf-8'))
+                    elif (x_mid > 370):
+                        print("Move right")
+                        serialInst.write('dddd'.encode('utf-8'))
+                    elif (y_mid < 190):
+                        print("Move up")
+                        serialInst.write('wwww'.encode('utf-8'))
+                    elif (y_mid > 290):
+                        print("Move down")
+                        serialInst.write('ssss'.encode('utf-8'))
+
+            else: # No fire detected; sweep for fire
+                if (count < 20 and forward == True):
+                    serialInst.write('aaaaaa'.encode('utf-8'))
+                    count += 1
+                else:
+                    forward = False
+                    serialInst.write('dddddd'.encode('utf-8'))
+                    count -= 1
+                if (count == -1):
+                    forward = True
 
             # Stream results
             im0 = annotator.result()
@@ -280,6 +321,19 @@ def parse_opt():
     opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
     print_args(vars(opt))
     return opt
+
+def send_text_alert():
+    responseData = sms.send_message(
+        {
+            "from": "FIRE ALARM",
+            "to": "4553669936",
+            "text": "The fire extinguishing cannon has detected fire and attempted to extinguish it.",
+        }
+    )
+    if responseData["messages"][0]["status"] == "0":
+        print("Message sent successfully.")
+    else:
+        print(f"Message failed with error: {responseData['messages'][0]['error-text']}")
 
 
 def main(opt):
