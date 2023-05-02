@@ -189,9 +189,20 @@ def run(
                         
             
             for coords in fire_coordinates:
-                print("X mid: ", (coords[0].item() + coords[2].item())/2)
-                print("Y mid: ", (coords[1].item() + coords[3].item())/2)
-                print(coords[0].item(), coords[1].item(), coords[2].item(), coords[3].item())
+                x_mid = (coords[0].item() + coords[2].item())/2
+                y_mid = (coords[1].item() + coords[3].item())/2
+                print("Center: ", x_mid, y_mid)
+                if (x_mid > 270 and x_mid < 370) and (y_mid > 190 and y_mid < 290):
+                    print("Fire detected in center")
+                    break
+                elif (x_mid < 270):
+                    print("Move right")
+                elif (x_mid > 370):
+                    print("Move left")
+                elif (y_mid < 190):
+                    print("Move down")
+                elif (y_mid > 290):
+                    print("Move up")
 
             # Stream results
             im0 = annotator.result()
