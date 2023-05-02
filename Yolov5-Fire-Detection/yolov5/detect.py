@@ -189,8 +189,8 @@ def run(
                         
             
             for coords in fire_coordinates:
-		print("X mid: ", (coords[0].item() + coords[2].item())/2)
-		print("Y mid: ", (coords[1].item() + coords[3].item())/2)
+                print("X mid: ", (coords[0].item() + coords[2].item())/2)
+                print("Y mid: ", (coords[1].item() + coords[3].item())/2)
 
             # Stream results
             im0 = annotator.result()
