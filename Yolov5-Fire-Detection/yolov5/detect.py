@@ -60,13 +60,6 @@ forward = True
 client = vonage.Client(key="79267e59", secret="Master23")
 sms = vonage.Sms(client)
 
-# Hold projectile in place
-serialInst.write('m'.encode('utf-8'))
-time.sleep(0.2)
-# Activate tilt motor
-serialInst.write('h'.encode('utf-8'))
-time.sleep(0.2)
-
 from models.common import DetectMultiBackend
 from utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadScreenshots, LoadStreams
 from utils.general import (LOGGER, Profile, check_file, check_img_size, check_imshow, check_requirements, colorstr, cv2,
@@ -116,6 +109,13 @@ def run(
     global count
     global forward
     global serialInst
+
+    # Hold projectile in place
+    serialInst.write('m'.encode('utf-8'))
+    time.sleep(0.2)
+    # Activate tilt motor
+    serialInst.write('h'.encode('utf-8'))
+    time.sleep(0.2)
 
     # Directories
     save_dir = increment_path(Path(project) / name, exist_ok=exist_ok)  # increment run
