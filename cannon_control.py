@@ -4,7 +4,7 @@ from pynput import keyboard
 ports = serial.tools.list_ports.comports()
 for port in ports:
     print(str(port))
-serialInst = serial.Serial('/dev/cu.usbmodem141201')
+serialInst = serial.Serial('/dev/cu.usbserial-14120')
 serialInst.baudrate = 9600
 
 count = 0
@@ -21,14 +21,14 @@ def on_press(key):
         elif (key.char == 'o'): # forward
             n = int(strBuilder)
             strBuilder = ""
-            for i in range(n):
+            for _ in range(n):
                 strBuilder += 'w'
             serialInst.write(strBuilder.encode('utf-8'))
             strBuilder = ""
         elif (key.char == 'p'): # backwards
             n = int(strBuilder)
             strBuilder = ""
-            for i in range(n):
+            for _ in range(n):
                 strBuilder += 's'
             serialInst.write(strBuilder.encode('utf-8'))
             strBuilder = ""
@@ -57,11 +57,9 @@ def on_press(key):
             key))
 
 def on_release(key):
-    global count, strBuilder, counting
-
-    print('{0} released'.format(
-        key))
-    print(count, strBuilder, counting)
+    global strBuilder
+    if strBuilder != "":
+        print(strBuilder)
     if key == keyboard.Key.esc:
         # Stop listener
         return False

@@ -67,7 +67,7 @@ void loop() {
     } else if (inByte == 106) { // j
       turnOffTiltMotor();
     } else if (inByte == 107) { // k
-      experimentSetup30deg();
+      // Nothing
     } else if (inByte == 109) { // m
       holdProjectile();
     }
@@ -76,7 +76,7 @@ void loop() {
 
 void tiltOneStepForward() {
   digitalWrite(tiltDirPin, LOW);
-  for (int i = 0; i < 10; i++) { // changed from 10 to 1
+  for (int i = 0; i < 20; i++) {
     digitalWrite(tiltStepPin, HIGH);
     delayMicroseconds(1000);
     digitalWrite(tiltStepPin, LOW);
@@ -134,7 +134,7 @@ void releaseProjectile() {
 }
 
 void holdProjectile() {
-  holdServo.write(-5);  
+  holdServo.write(5);  
 }
 
 void resetHoldingRod() {
@@ -155,77 +155,4 @@ void turnOffRotationMotor() {
 
 void turnOnRotationMotor() {
   digitalWrite(rotationTurnOffPin, HIGH);  
-}
-
-void experimentSetup0deg() {
-  turnOnTiltMotor();
-  delay(20);
-  for (int i = 0; i < 21; i++) {
-    tiltOneStepForward();
-  }
-  delay(1000);
-  fire();
-  delay(1000);
-  turnOffTiltMotor();
-}
-
-void experimentSetupMin15deg() {
-  turnOnTiltMotor();
-  delay(20);
-  for (int i = 0; i < 24; i++) {
-    tiltOneStepForward();
-    delay(5);
-  }
-  delay(1000);
-  fire();
-  delay(1000);
-  turnOffTiltMotor();
-}
-
-void experimentSetupMin30deg() {
-  turnOnTiltMotor();
-  delay(20);
-  for (int i = 0; i < 23; i++) {
-    tiltOneStepForward();
-  }
-  delay(1000);
-  fire();
-  delay(1000);
-  turnOffTiltMotor();
-}
-
-void experimentSetupMin45deg() {
-  turnOnTiltMotor();
-  delay(20);
-  for (int i = 0; i < 26; i++) {
-    tiltOneStepForward();
-  }
-  delay(1000);
-  fire();
-  delay(1000);
-  turnOffTiltMotor();
-}
-
-void experimentSetup15deg() {
-  turnOnTiltMotor();
-  delay(20);
-  for (int i = 0; i < 7; i++) {
-    tiltOneStepForward();
-  }
-  delay(1000);
-  fire();
-  delay(1000);
-  turnOffTiltMotor();
-}
-
-void experimentSetup30deg() {
-  turnOnTiltMotor();
-  delay(20);
-  for (int i = 0; i < 5; i++) {
-    tiltOneStepForward();
-  }
-  delay(1000);
-  fire();
-  delay(1000);
-  turnOffTiltMotor();
 }

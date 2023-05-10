@@ -36,8 +36,8 @@ from pathlib import Path
 import serial.tools.list_ports
 import time
 import vonage
-
 import torch
+from triangular_distance_calculator import *
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
@@ -54,7 +54,8 @@ serialInst.baudrate = 9600
 
 # For cannon movement
 count = 0
-forward = True 
+forward = True
+currentStepsForward = 0
 
 # SMS alert
 client = vonage.Client(key="79267e59", secret="Master23")
@@ -109,6 +110,7 @@ def run(
     global count
     global forward
     global serialInst
+    global currentStepsForward
 
     # Hold projectile in place
     serialInst.write('m'.encode('utf-8'))
@@ -218,6 +220,22 @@ def run(
                     print("Center: ", x_mid, y_mid) # Print center coordinates of fire
                     if (x_mid > 270 and x_mid < 370) and (y_mid > 190 and y_mid < 290):
                         print("Fire detected in center")
+                        # Get back to angle 0
+                        current_angle = get_angle(currentStepsForward)
+                        steps_to_zero = get_steps(current_angle)
+                        command = ""
+                        for _ in range(steps_to_zero):
+                            command += "s"
+                        serialInst.write(command.encode('utf-8'))
+
+                        # Fire to correct distance
+                        distance_to_fire = triangle_sides(current_angle)
+                        fire_angle = get_angle_from_distance(distance_to_fire)
+                        steps_to_fire_angle = get_steps(fire_angle)
+                        for _ in range(steps_to_fire_angle):
+                            command += "w" # Figure out when it's 'w' and when it's 's'
+                        serialInst.write(command.encode('utf-8'))
+
                         serialInst.write('f'.encode('utf-8')) # Fire cannon
                         time.sleep(1)
                         serialInst.write('j'.encode('utf-8')) # Stop tilt motor
@@ -231,19 +249,27 @@ def run(
                     elif (y_mid < 190):
                         print("Move up")
                         serialInst.write('wwww'.encode('utf-8'))
+                        currentStepsForward += 4
                     elif (y_mid > 290):
                         print("Move down")
                         serialInst.write('ssss'.encode('utf-8'))
+                        currentStepsForward -= 4
 
             else: # No fire detected; sweep for fire
                 if (count < 20 and forward == True):
                     serialInst.write('aaaaaa'.encode('utf-8'))
                     count += 1
-                else:
+                elif (count == 20):
+                    serialInst.write('sssssss'.encode('utf-8'))
+                    currentStepsForward += 7
+                    count -=1
                     forward = False
+                else:
                     serialInst.write('dddddd'.encode('utf-8'))
                     count -= 1
                 if (count == -1):
+                    serialInst.write('sssssss'.encode('utf-8'))
+                    currentStepsForward += 7
                     forward = True
 
             # Stream results
