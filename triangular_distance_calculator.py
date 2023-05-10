@@ -36,4 +36,20 @@ def get_steps(angle):
             steps_to_zero = steps_to_angle + 14  # Assumes symmetry around 0 degrees
             return int(steps_to_angle), int(steps_to_zero)
 
-print(get_steps(37))
+def get_angle(steps):
+    if steps <= 1:
+        return 0  # Assume at 0 degrees if fewer than 3 steps taken
+    elif steps >= 20:
+        return 45  # Assume at 45 degrees if more than 61 steps taken
+    else:
+        x1, y1 = 15, 6
+        x2, y2 = 45, 17
+        slope = (y2 - y1) / (x2 - x1)
+        intercept = y1 - slope * x1
+        angle = (steps - intercept) / slope
+        return round(angle)
+
+def get_angle_from_distance(x):
+    return -600 + 10*x - 0.05*x**2 + 0.0000824*x**3
+
+print(get_steps(20))

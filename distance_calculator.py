@@ -15,7 +15,7 @@ distances = np.array([132.53, 159.50, 207.03, 275.47, 281.80, 283.27, 90.63, 116
 # Fit a polynomial of degree 2
 coefs = polyfit((heights, angles), distances, deg=2)
 print(coefs)
-distance = 4.87418863e-03 * height^2 - 4.98298172e-01 * height * angle + 1.82687335e+02 * angle^2
+#distance = 4.87418863e-03 * height^2 - 4.98298172e-01 * height * angle + 1.82687335e+02 * angle^2
 
 def calculate_distance(height, angle):
     a, b, c = coefs
