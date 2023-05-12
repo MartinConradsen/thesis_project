@@ -37,7 +37,7 @@ import serial.tools.list_ports
 import time
 import vonage
 import torch
-from triangular_distance_calculator import *
+from utils import *
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
@@ -54,7 +54,6 @@ serialInst.baudrate = 9600
 
 # For cannon movement
 count = 0
-forward = True
 currentStepsForward = 0
 
 # SMS alert
@@ -108,7 +107,6 @@ def run(
     if is_url and is_file:
         source = check_file(source)  # download
     global count
-    global forward
     global serialInst
     global currentStepsForward
 
@@ -222,18 +220,24 @@ def run(
                         print("Fire detected in center")
                         # Get back to angle 0
                         current_angle = get_angle(currentStepsForward)
-                        steps_to_zero = get_steps(current_angle)
                         command = ""
-                        for _ in range(steps_to_zero):
+                        for _ in range(currentStepsForward):
                             command += "s"
                         serialInst.write(command.encode('utf-8'))
 
                         # Fire to correct distance
-                        distance_to_fire = triangle_sides(current_angle)
-                        fire_angle = get_angle_from_distance(distance_to_fire)
-                        steps_to_fire_angle = get_steps(fire_angle)
+                        fire_distance = distance_to_fire(current_angle)
+                        fire_angle = get_angle_from_distance(fire_distance)
+
+                        # Kill program of fire is too far away
+                        if (fire_angle == -1):
+                            print("Fire too far away; exiting program.")
+                            serialInst.write('j'.encode('utf-8')) # Stop tilt motor
+                            sys.exit() # Kill program
+
+                        steps_to_fire_angle, direction = get_steps_final_angle(fire_angle)
                         for _ in range(steps_to_fire_angle):
-                            command += "w" # Figure out when it's 'w' and when it's 's'
+                            command += str(direction) # Tilt forwards or backwards dependng on the angle
                         serialInst.write(command.encode('utf-8'))
 
                         serialInst.write('f'.encode('utf-8')) # Fire cannon
@@ -241,36 +245,48 @@ def run(
                         serialInst.write('j'.encode('utf-8')) # Stop tilt motor
                         sys.exit() # Kill program
                     elif (x_mid < 270):
-                        print("Move left")
-                        serialInst.write('aaaa'.encode('utf-8'))
+                        print("Moving left")
+                        serialInst.write('aa'.encode('utf-8'))
                     elif (x_mid > 370):
-                        print("Move right")
-                        serialInst.write('dddd'.encode('utf-8'))
+                        print("Moving right")
+                        serialInst.write('dd'.encode('utf-8'))
                     elif (y_mid < 190):
-                        print("Move up")
-                        serialInst.write('wwww'.encode('utf-8'))
-                        currentStepsForward += 4
+                        print("Moving up")
+                        serialInst.write('ss'.encode('utf-8'))
+                        currentStepsForward += 2
                     elif (y_mid > 290):
-                        print("Move down")
-                        serialInst.write('ssss'.encode('utf-8'))
-                        currentStepsForward -= 4
+                        print("Moving down")
+                        serialInst.write('ww'.encode('utf-8'))
+                        currentStepsForward -= 2
 
-            else: # No fire detected; sweep for fire
-                if (count < 20 and forward == True):
-                    serialInst.write('aaaaaa'.encode('utf-8'))
+            else: # No fire detected; sweep for fire a total of 4 rotations
+                if (count < 20):
+                    serialInst.write('aaa'.encode('utf-8'))
                     count += 1
                 elif (count == 20):
-                    serialInst.write('sssssss'.encode('utf-8'))
-                    currentStepsForward += 7
-                    count -=1
-                    forward = False
+                    serialInst.write('wwwww'.encode('utf-8'))
+                    currentStepsForward += 5
+                    count += 1
+                elif (count > 20 and count < 40):
+                    serialInst.write('ddd'.encode('utf-8'))
+                    count += 1
+                elif (count == 40):
+                    serialInst.write('wwwww'.encode('utf-8'))
+                    currentStepsForward += 5
+                    count += 1
+                elif (count > 40 and count < 60):
+                    serialInst.write('aaa'.encode('utf-8'))
+                    count += 1
+                elif (count == 60):
+                    serialInst.write('wwwww'.encode('utf-8'))
+                    currentStepsForward += 5
+                    count += 1
+                elif (count > 60 and count < 80):
+                    serialInst.write('ddd'.encode('utf-8'))
+                    count += 1
                 else:
-                    serialInst.write('dddddd'.encode('utf-8'))
-                    count -= 1
-                if (count == -1):
-                    serialInst.write('sssssss'.encode('utf-8'))
-                    currentStepsForward += 7
-                    forward = True
+                    serialInst.write('j'.encode('utf-8')) # Stop tilt motor
+                    sys.exit() # Kill program
 
             # Stream results
             im0 = annotator.result()

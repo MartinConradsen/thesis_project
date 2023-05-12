@@ -4,10 +4,8 @@
 #define turnDirPin 4
 #define turnStepPin 5
 #define stepsPerRevolution 200
-#define buzzerPin 10
 #define DO A5
 #define tiltTurnOffPin 12
-#define rotationTurnOffPin 10
 
 Servo fireServo;
 Servo holdServo;
@@ -18,7 +16,6 @@ void setup() {
   pinMode(tiltStepPin, OUTPUT);
   pinMode(turnDirPin, OUTPUT);
   pinMode(turnStepPin, OUTPUT);
-  pinMode(buzzerPin, OUTPUT);
 
   // Make sure tilt motor doesn't get constant power (for overheating reasons)
   pinMode(tiltTurnOffPin, OUTPUT);
@@ -55,9 +52,9 @@ void loop() {
     } else if (inByte == 115) { // s
       tiltOneStepBackwards();
     } else if (inByte == 97) { // a
-      turnOneStepClockwise();
-    } else if (inByte == 100) { // d
       turnOneStepCounterClockwise();
+    } else if (inByte == 100) { // d
+      turnOneStepClockwise();
     } else if (inByte == 102) { // f
       fire();
     } else if (inByte == 103) { // g
@@ -66,8 +63,6 @@ void loop() {
       turnOnTiltMotor();  
     } else if (inByte == 106) { // j
       turnOffTiltMotor();
-    } else if (inByte == 107) { // k
-      // Nothing
     } else if (inByte == 109) { // m
       holdProjectile();
     }
@@ -86,7 +81,7 @@ void tiltOneStepForward() {
 
 void tiltOneStepBackwards() {
   digitalWrite(tiltDirPin, HIGH);
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < 20; i++) {
     digitalWrite(tiltStepPin, HIGH);
     delayMicroseconds(1000);
     digitalWrite(tiltStepPin, LOW);
@@ -96,7 +91,7 @@ void tiltOneStepBackwards() {
 
 void turnOneStepClockwise() {
   digitalWrite(turnDirPin, LOW);
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < 20; i++) {
     digitalWrite(turnStepPin, HIGH);
     delayMicroseconds(1000);
     digitalWrite(turnStepPin, LOW);
@@ -106,7 +101,7 @@ void turnOneStepClockwise() {
 
 void turnOneStepCounterClockwise() {
   digitalWrite(turnDirPin, HIGH);
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 20; i++) {
       digitalWrite(turnStepPin, HIGH);
       delayMicroseconds(1000);
       digitalWrite(turnStepPin, LOW);
@@ -118,7 +113,6 @@ void fire() {
   releaseProjectile();
   for (pos = 130; pos >= 80; pos -= 1) {
     fireServo.write(pos);
-    //delay(1);
   }
   delay(200);
   for (pos = 80; pos <= 130; pos += 1) {
@@ -147,12 +141,4 @@ void turnOffTiltMotor() {
 
 void turnOnTiltMotor() {
   digitalWrite(tiltTurnOffPin, HIGH);  
-}
-
-void turnOffRotationMotor() {
-  digitalWrite(rotationTurnOffPin, LOW);  
-}
-
-void turnOnRotationMotor() {
-  digitalWrite(rotationTurnOffPin, HIGH);  
 }

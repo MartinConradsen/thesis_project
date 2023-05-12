@@ -4,15 +4,16 @@ from pynput import keyboard
 ports = serial.tools.list_ports.comports()
 for port in ports:
     print(str(port))
-serialInst = serial.Serial('/dev/cu.usbserial-2120')
+serialInst = serial.Serial('/dev/cu.usbserial-14120')
 serialInst.baudrate = 9600
 
 count = 0
 strBuilder = ""
 counting = False
+moreCount = 0
 
 def on_press(key):
-    global count, strBuilder, counting
+    global count, strBuilder, counting, moreCount
     try:
         if (key.char == 'c'):
             counting = not counting
@@ -32,9 +33,27 @@ def on_press(key):
                 strBuilder += 's'
             serialInst.write(strBuilder.encode('utf-8'))
             strBuilder = ""
+        elif (key.char == 'k'): # left
+            n = int(strBuilder)
+            strBuilder = ""
+            for _ in range(n):
+                strBuilder += 'a'
+            serialInst.write(strBuilder.encode('utf-8'))
+            strBuilder = ""
+        elif (key.char == 'l'): # right
+            n = int(strBuilder)
+            strBuilder = ""
+            for _ in range(n):
+                strBuilder += 'd'
+            serialInst.write(strBuilder.encode('utf-8'))
+            strBuilder = ""
         elif (key.char == 'a'):
+            moreCount += 1
+            print(moreCount)
             serialInst.write('a'.encode('utf-8'))
         elif (key.char == 'd'):
+            moreCount += 1
+            print(moreCount)
             serialInst.write('d'.encode('utf-8'))
         elif (key.char == 'w'):
             serialInst.write('w'.encode('utf-8'))
@@ -48,10 +67,9 @@ def on_press(key):
             serialInst.write('h'.encode('utf-8'))
         elif (key.char == 'j'):
             serialInst.write('j'.encode('utf-8'))
-        elif (key.char == 'k'):
-            serialInst.write('k'.encode('utf-8'))
         elif (key.char == 'm'):
             serialInst.write('m'.encode('utf-8'))
+            moreCount = 0
     except AttributeError:
         print('special key {0} pressed'.format(
             key))
