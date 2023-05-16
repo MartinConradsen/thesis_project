@@ -260,29 +260,29 @@ def run(
                         currentStepsForward -= 2
 
             else: # No fire detected; sweep for fire a total of 4 rotations
-                if (count < 20):
-                    serialInst.write('aaa'.encode('utf-8'))
+                if (count < 24):
+                    serialInst.write('aaaaaaa'.encode('utf-8'))
                     count += 1
-                elif (count == 20):
+                elif (count == 24):
                     serialInst.write('wwwww'.encode('utf-8'))
                     currentStepsForward += 5
                     count += 1
-                elif (count > 20 and count < 40):
-                    serialInst.write('ddd'.encode('utf-8'))
+                elif (count > 24 and count < 48):
+                    serialInst.write('ddddddd'.encode('utf-8'))
                     count += 1
-                elif (count == 40):
+                elif (count == 48):
                     serialInst.write('wwwww'.encode('utf-8'))
                     currentStepsForward += 5
                     count += 1
-                elif (count > 40 and count < 60):
-                    serialInst.write('aaa'.encode('utf-8'))
+                elif (count > 48 and count < 72):
+                    serialInst.write('aaaaaaa'.encode('utf-8'))
                     count += 1
-                elif (count == 60):
+                elif (count == 72):
                     serialInst.write('wwwww'.encode('utf-8'))
                     currentStepsForward += 5
                     count += 1
-                elif (count > 60 and count < 80):
-                    serialInst.write('ddd'.encode('utf-8'))
+                elif (count > 72 and count < 96):
+                    serialInst.write('ddddddd'.encode('utf-8'))
                     count += 1
                 else:
                     serialInst.write('j'.encode('utf-8')) # Stop tilt motor
