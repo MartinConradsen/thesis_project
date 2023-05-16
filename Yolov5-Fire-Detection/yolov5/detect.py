@@ -116,6 +116,8 @@ def run(
     # Activate tilt motor
     serialInst.write('h'.encode('utf-8'))
     time.sleep(0.2)
+    serialInst.write('wwwwwwwwww'.encode('utf-8'))
+    time.sleep(0.2)
 
     # Directories
     save_dir = increment_path(Path(project) / name, exist_ok=exist_ok)  # increment run
