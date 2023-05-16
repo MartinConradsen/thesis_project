@@ -37,7 +37,7 @@ import serial.tools.list_ports
 import time
 import vonage
 import torch
-from utils import *
+from cannon_utils import *
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
