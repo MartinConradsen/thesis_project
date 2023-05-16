@@ -49,7 +49,7 @@ ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 ports = serial.tools.list_ports.comports()
 for port in ports:
     print(str(port))
-serialInst = serial.Serial('/dev/ttyACM0') # Change this to the port that the Arduino is connected to
+serialInst = serial.Serial('/dev/ttyUSB0') # Change this to the port that the Arduino is connected to
 serialInst.baudrate = 9600
 
 # For cannon movement
