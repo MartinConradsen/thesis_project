@@ -2,9 +2,12 @@ import math
 
 def distance_to_fire(x):
     x = 90 - x
+    print("Cannon angle: " + str(x) + " degrees")
+
     a = 220
     y = 90
     z = 180 - x - y
+    print("Fire side angle: " + str(z) + " degrees")
     
     # Convert angles to radians
     x = math.radians(x)
