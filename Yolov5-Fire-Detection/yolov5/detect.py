@@ -55,6 +55,7 @@ serialInst.baudrate = 9600
 # For cannon movement
 count = 0
 currentStepsForward = 15
+fireLowOnImage = False
 
 # SMS alert
 client = vonage.Client(key="79267e59", secret="Master23")
@@ -109,6 +110,7 @@ def run(
     global count
     global serialInst
     global currentStepsForward
+    global fireLowOnImage
 
     # Hold projectile in place
     serialInst.write('m'.encode('utf-8'))
@@ -218,15 +220,21 @@ def run(
                     x_mid = (coords[0].item() + coords[2].item())/2
                     y_mid = (coords[1].item() + coords[3].item())/2
                     print("Center: ", x_mid, y_mid) # Print center coordinates of fire
-                    if (x_mid > 270 and x_mid < 370) and ((y_mid > 190 and y_mid < 290) or (y_mid > 190 and currentStepsForward == 15)):
-                        print("Fire detected in center")
-                        # Get back to angle 0
-                        current_angle = get_angle(currentStepsForward)
-                        command = ""
-                        for _ in range(currentStepsForward):
-                            command += "s"
-                        serialInst.write(command.encode('utf-8'))
-                        command = ""
+                    if (x_mid > 270 and x_mid < 370) and ((y_mid > 190 and y_mid < 290) or (y_mid > 190 and fireLowOnImage)):
+
+                        current_angle = 0
+                        if (fireLowOnImage):
+                            print("Fire super low")
+                            currentStepsForward = 0
+                        else:
+                            print("Fire detected in center")
+                            # Get back to angle 0
+                            current_angle = get_angle(currentStepsForward)
+                            command = ""
+                            for _ in range(currentStepsForward):
+                                command += "s"
+                            serialInst.write(command.encode('utf-8'))
+                            command = ""
 
                         # Fire to correct distance
                         fire_distance = distance_to_fire(current_angle)
@@ -235,7 +243,7 @@ def run(
                         print("Distance to fire: ", fire_distance)
                         print("Firing angle: ", fire_angle)
 
-                        # Kill program of fire is too far away
+                        # Kill program of angle calculation returns -1
                         if (fire_angle == -1):
                             print("Fire too far away; exiting program.")
                             serialInst.write('g'.encode('utf-8')) # Stop holding motor
@@ -247,6 +255,9 @@ def run(
                         for _ in range(steps_to_fire_angle):
                             command += str(direction) # Tilt forwards or backwards dependng on the angle
                         serialInst.write(command.encode('utf-8'))
+
+                        time.sleep(0.1)
+                        serialInst.write("dd".encode('utf-8'))
 
                         print("Firing cannon in 6 seconds...")
                         time.sleep(6)
@@ -269,9 +280,12 @@ def run(
                         serialInst.write('ss'.encode('utf-8'))
                         currentStepsForward -= 2
                     elif (y_mid > 290):
-                        print("Moving down")
-                        serialInst.write('ww'.encode('utf-8'))
-                        currentStepsForward += 2
+                        if (currentStepsForward == 15):
+                            fireLowOnImage = True
+                        else:
+                            print("Moving down")
+                            serialInst.write('ww'.encode('utf-8'))
+                            currentStepsForward += 2
 
             else: # No fire detected; sweep for fire a total of 4 rotations
                 if (count < 24):
