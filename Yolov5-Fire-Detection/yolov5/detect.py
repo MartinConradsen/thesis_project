@@ -245,6 +245,7 @@ def run(
 
                         serialInst.write('f'.encode('utf-8')) # Fire cannon
                         time.sleep(1)
+                        serialInst.write('g'.encode('utf-8')) # Stop holding motor
                         serialInst.write('j'.encode('utf-8')) # Stop tilt motor
                         sys.exit() # Kill program
                     elif (x_mid < 270):

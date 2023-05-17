@@ -32,4 +32,6 @@ def get_angle_from_distance(x):
     angle = int(-600 + 10*x - 0.05*x**2 + 0.0000824*x**3)
     if (angle >= 0 and angle <= 75):
         return angle
+    if (angle > 75):
+        return 75
     return -1
