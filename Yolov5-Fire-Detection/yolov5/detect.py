@@ -222,19 +222,32 @@ def run(
                     print("Center: ", x_mid, y_mid) # Print center coordinates of fire
                     if (x_mid > 270 and x_mid < 370) and ((y_mid > 190 and y_mid < 290) or (y_mid > 190 and fireLowOnImage)):
 
-                        current_angle = 0
                         if (fireLowOnImage):
-                            print("Fire super low")
-                            currentStepsForward = 0
+                            if (y_mid > 290 and y_mid < 385):
+                                currentStepsForward = 0
+                                print("Fire kind of low; shooting projectile in 6 seconds...")
+                                time.sleep(6)
+                                serialInst.write('f'.encode('utf-8')) # Fire cannon
+                                time.sleep(1)
+                                serialInst.write('g'.encode('utf-8')) # Stop holding motor
+                                serialInst.write('j'.encode('utf-8')) # Stop tilt motor
+                                sys.exit() # Kill program
+                            elif (y_mid > 390 and y_mid < 480):
+                                print("Fire super low; releasing projectile in 6 seconds...")
+                                time.sleep(6)
+                                serialInst.write('g'.encode('utf-8')) # Stop holding motor
+                                serialInst.write('j'.encode('utf-8')) # Stop tilt motor
+                                sys.exit() # Kill program
                         else:
                             print("Fire detected in center")
-                            # Get back to angle 0
-                            current_angle = get_angle(currentStepsForward)
-                            command = ""
-                            for _ in range(currentStepsForward):
-                                command += "s"
-                            serialInst.write(command.encode('utf-8'))
-                            command = ""
+
+                        # Get back to angle 0
+                        current_angle = get_angle(currentStepsForward)
+                        command = ""
+                        for _ in range(currentStepsForward):
+                            command += "s"
+                        serialInst.write(command.encode('utf-8'))
+                        command = ""
 
                         # Fire to correct distance
                         fire_distance = distance_to_fire(current_angle)
@@ -243,7 +256,7 @@ def run(
                         print("Distance to fire: ", fire_distance)
                         print("Firing angle: ", fire_angle)
 
-                        # Kill program of angle calculation returns -1
+                        # Kill program of fire is too far away
                         if (fire_angle == -1):
                             print("Fire too far away; exiting program.")
                             serialInst.write('g'.encode('utf-8')) # Stop holding motor
@@ -255,9 +268,6 @@ def run(
                         for _ in range(steps_to_fire_angle):
                             command += str(direction) # Tilt forwards or backwards dependng on the angle
                         serialInst.write(command.encode('utf-8'))
-
-                        time.sleep(0.1)
-                        serialInst.write("dd".encode('utf-8'))
 
                         print("Firing cannon in 6 seconds...")
                         time.sleep(6)
