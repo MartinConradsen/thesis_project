@@ -234,7 +234,7 @@ def run(
                         # Kill program of fire is too far away
                         if (fire_angle == -1):
                             print("Fire too far away; exiting program.")
-			    serialInst.write('g'.encode('utf-8')) # Stop holding motor
+                            serialInst.write('g'.encode('utf-8')) # Stop holding motor
                             serialInst.write('j'.encode('utf-8')) # Stop tilt motor
                             sys.exit() # Kill program
 
