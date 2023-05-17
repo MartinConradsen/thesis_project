@@ -231,6 +231,9 @@ def run(
                         fire_distance = distance_to_fire(current_angle)
                         fire_angle = get_angle_from_distance(fire_distance)
 
+                        print("Distance to fire: ", fire_distance)
+                        print("Firing angle: ", fire_angle)
+
                         # Kill program of fire is too far away
                         if (fire_angle == -1):
                             print("Fire too far away; exiting program.")
@@ -243,8 +246,6 @@ def run(
                             command += str(direction) # Tilt forwards or backwards dependng on the angle
                         serialInst.write(command.encode('utf-8'))
 
-                        print("Distance to fire: ", fire_distance)
-                        print("Firing angle: ", fire_angle)
                         print("Firing cannon in 3 seconds...")
                         time.sleep(3)
 
@@ -330,15 +331,15 @@ def run(
                     vid_writer[i].write(im0)
 
         # Print time (inference-only)
-        LOGGER.info(f"{s}{'' if len(det) else '(no detections), '}{dt[1].dt * 1E3:.1f}ms")
+        #LOGGER.info(f"{s}{'' if len(det) else '(no detections), '}{dt[1].dt * 1E3:.1f}ms")
         
 
     # Print results
     t = tuple(x.t / seen * 1E3 for x in dt)  # speeds per image
-    LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {(1, 3, *imgsz)}' % t)
+    #LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {(1, 3, *imgsz)}' % t)
     if save_txt or save_img:
         s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if save_txt else ''
-        LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
+        #LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
     if update:
         strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
 
