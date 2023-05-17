@@ -54,7 +54,7 @@ serialInst.baudrate = 9600
 
 # For cannon movement
 count = 0
-currentStepsForward = 0
+currentStepsForward = 15
 
 # SMS alert
 client = vonage.Client(key="79267e59", secret="Master23")
@@ -116,7 +116,7 @@ def run(
     # Activate tilt motor
     serialInst.write('h'.encode('utf-8'))
     time.sleep(0.2)
-    serialInst.write('wwwwwwwwww'.encode('utf-8'))
+    serialInst.write('wwwwwwwwwwwwwwwwwwwwwwwww'.encode('utf-8'))
     time.sleep(0.2)
 
     # Directories
@@ -218,7 +218,7 @@ def run(
                     x_mid = (coords[0].item() + coords[2].item())/2
                     y_mid = (coords[1].item() + coords[3].item())/2
                     print("Center: ", x_mid, y_mid) # Print center coordinates of fire
-                    if (x_mid > 270 and x_mid < 370) and (y_mid > 190 and y_mid < 290):
+                    if (x_mid > 270 and x_mid < 370) and ((y_mid > 190 and y_mid < 290) or (y_mid > 190 and currentStepsForward == 15)):
                         print("Fire detected in center")
                         # Get back to angle 0
                         current_angle = get_angle(currentStepsForward)
@@ -276,22 +276,22 @@ def run(
                     serialInst.write('ddddddd'.encode('utf-8'))
                     count += 1
                 elif (count == 24):
-                    serialInst.write('wwwww'.encode('utf-8'))
-                    currentStepsForward += 5
+                    serialInst.write('sssss'.encode('utf-8'))
+                    currentStepsForward -= 5
                     count += 1
                 elif (count > 24 and count < 48):
                     serialInst.write('aaaaaaa'.encode('utf-8'))
                     count += 1
                 elif (count == 48):
-                    serialInst.write('wwwww'.encode('utf-8'))
-                    currentStepsForward += 5
+                    serialInst.write('sssss'.encode('utf-8'))
+                    currentStepsForward -= 5
                     count += 1
                 elif (count > 48 and count < 72):
                     serialInst.write('ddddddd'.encode('utf-8'))
                     count += 1
                 elif (count == 72):
-                    serialInst.write('wwwww'.encode('utf-8'))
-                    currentStepsForward += 5
+                    serialInst.write('sssss'.encode('utf-8'))
+                    currentStepsForward -= 5
                     count += 1
                 elif (count > 72 and count < 96):
                     serialInst.write('aaaaaaa'.encode('utf-8'))
