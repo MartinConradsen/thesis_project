@@ -226,6 +226,7 @@ def run(
                         for _ in range(currentStepsForward):
                             command += "s"
                         serialInst.write(command.encode('utf-8'))
+                        command = ""
 
                         # Fire to correct distance
                         fire_distance = distance_to_fire(current_angle)
