@@ -1,6 +1,7 @@
 import math
 
 def distance_to_fire(x):
+    x = 90 - x
     a = 220
     y = 90
     z = 180 - x - y
