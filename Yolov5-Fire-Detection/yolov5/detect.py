@@ -242,6 +242,7 @@ def run(
                             sys.exit() # Kill program
 
                         steps_to_fire_angle, direction = get_steps_final_angle(fire_angle)
+                        print("Steps to fire angle: ", steps_to_fire_angle)
                         for _ in range(steps_to_fire_angle):
                             command += str(direction) # Tilt forwards or backwards dependng on the angle
                         serialInst.write(command.encode('utf-8'))
