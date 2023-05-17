@@ -289,6 +289,7 @@ def run(
                     serialInst.write('aaaaaaa'.encode('utf-8'))
                     count += 1
                 else:
+                    serialInst.write('g'.encode('utf-8')) # Stop holding motor
                     serialInst.write('j'.encode('utf-8')) # Stop tilt motor
                     sys.exit() # Kill program
 
