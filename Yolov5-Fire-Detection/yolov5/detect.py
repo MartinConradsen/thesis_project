@@ -266,11 +266,11 @@ def run(
                     elif (y_mid < 190):
                         print("Moving up")
                         serialInst.write('ss'.encode('utf-8'))
-                        currentStepsForward += 2
+                        currentStepsForward -= 2
                     elif (y_mid > 290):
                         print("Moving down")
                         serialInst.write('ww'.encode('utf-8'))
-                        currentStepsForward -= 2
+                        currentStepsForward += 2
 
             else: # No fire detected; sweep for fire a total of 4 rotations
                 if (count < 24):
