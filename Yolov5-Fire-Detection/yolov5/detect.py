@@ -243,8 +243,15 @@ def run(
                             command += str(direction) # Tilt forwards or backwards dependng on the angle
                         serialInst.write(command.encode('utf-8'))
 
+                        print("Distance to fire: ", fire_distance)
+                        print("Firing angle: ", fire_angle)
+                        print("Firing cannon in 3 seconds...")
+                        time.sleep(3)
+
                         serialInst.write('f'.encode('utf-8')) # Fire cannon
+
                         time.sleep(1)
+                        
                         serialInst.write('g'.encode('utf-8')) # Stop holding motor
                         serialInst.write('j'.encode('utf-8')) # Stop tilt motor
                         sys.exit() # Kill program
