@@ -226,6 +226,7 @@ def run(
                             if (y_mid > 290 and y_mid < 385):
                                 currentStepsForward = 0
                                 print("Fire kind of low; shooting projectile in 6 seconds...")
+                                serialInst.write('dd'.encode('utf-8'))
                                 time.sleep(6)
                                 serialInst.write('f'.encode('utf-8')) # Fire cannon
                                 time.sleep(1)
@@ -234,6 +235,7 @@ def run(
                                 sys.exit() # Kill program
                             elif (y_mid > 390 and y_mid < 480):
                                 print("Fire super low; releasing projectile in 6 seconds...")
+                                serialInst.write('dd'.encode('utf-8'))
                                 time.sleep(6)
                                 serialInst.write('g'.encode('utf-8')) # Stop holding motor
                                 serialInst.write('j'.encode('utf-8')) # Stop tilt motor
@@ -269,6 +271,8 @@ def run(
                             command += str(direction) # Tilt forwards or backwards dependng on the angle
                         serialInst.write(command.encode('utf-8'))
 
+                        time.sleep(0.2)
+                        serialInst.write('dd'.encode('utf-8')) # Move right to center
                         print("Firing cannon in 6 seconds...")
                         time.sleep(6)
 
