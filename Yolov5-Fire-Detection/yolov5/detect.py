@@ -234,6 +234,7 @@ def run(
                         # Kill program of fire is too far away
                         if (fire_angle == -1):
                             print("Fire too far away; exiting program.")
+			    serialInst.write('g'.encode('utf-8')) # Stop holding motor
                             serialInst.write('j'.encode('utf-8')) # Stop tilt motor
                             sys.exit() # Kill program
 
@@ -263,28 +264,28 @@ def run(
 
             else: # No fire detected; sweep for fire a total of 4 rotations
                 if (count < 24):
-                    serialInst.write('aaaaaaa'.encode('utf-8'))
+                    serialInst.write('ddddddd'.encode('utf-8'))
                     count += 1
                 elif (count == 24):
                     serialInst.write('wwwww'.encode('utf-8'))
                     currentStepsForward += 5
                     count += 1
                 elif (count > 24 and count < 48):
-                    serialInst.write('ddddddd'.encode('utf-8'))
+                    serialInst.write('aaaaaaa'.encode('utf-8'))
                     count += 1
                 elif (count == 48):
                     serialInst.write('wwwww'.encode('utf-8'))
                     currentStepsForward += 5
                     count += 1
                 elif (count > 48 and count < 72):
-                    serialInst.write('aaaaaaa'.encode('utf-8'))
+                    serialInst.write('ddddddd'.encode('utf-8'))
                     count += 1
                 elif (count == 72):
                     serialInst.write('wwwww'.encode('utf-8'))
                     currentStepsForward += 5
                     count += 1
                 elif (count > 72 and count < 96):
-                    serialInst.write('ddddddd'.encode('utf-8'))
+                    serialInst.write('aaaaaaa'.encode('utf-8'))
                     count += 1
                 else:
                     serialInst.write('j'.encode('utf-8')) # Stop tilt motor
