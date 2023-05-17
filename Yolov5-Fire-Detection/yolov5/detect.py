@@ -224,7 +224,7 @@ def run(
 
                         if (fireLowOnImage):
                             if (y_mid > 290 and y_mid < 385):
-                                serialInst.write('sssss'.encode('utf-8'))
+                                serialInst.write('sssssss'.encode('utf-8'))
                                 print("Fire kind of low; shooting projectile in 6 seconds...")
                                 serialInst.write('dd'.encode('utf-8'))
                                 time.sleep(6)
