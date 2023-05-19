@@ -19,12 +19,12 @@ labels = np.random.randint(0, 3, 30)  # generate random labels (0, 1, or 2)
 
 # Create a scatter plot with different color labels
 fig, ax = plt.subplots()
-scatter = ax.scatter(green_minus_45, y1, label="-45°")
-scatter = ax.scatter(green_minus_30, y1, label="-30°")
-scatter = ax.scatter(green_minus_15, y1, label="-15°")
-scatter = ax.scatter(green_0, y1, label="0°")
-scatter = ax.scatter(green_15, y1, label="15°")
-scatter = ax.scatter(green_30, y1, label="30°")
+scatter = ax.scatter(green_minus_45, y1, label="0°")
+scatter = ax.scatter(green_minus_30, y1, label="15°")
+scatter = ax.scatter(green_minus_15, y1, label="30°")
+scatter = ax.scatter(green_0, y1, label="45°")
+scatter = ax.scatter(green_15, y1, label="60°")
+scatter = ax.scatter(green_30, y1, label="75°")
 
 ax.set_xlabel('Distance travelled in cm')
 ax.set_ylabel('Shot')
