@@ -20,7 +20,7 @@ ax.plot(x_values, data, marker='o', label='Data')
 ax.axhline(avg, color='r', linestyle='--', label=f'Average: {avg:.2f}')
 
 # Set the y-axis limits
-ax.set_ylim([0, 30])
+ax.set_ylim([10, 30])
 
 
 # Add title and labels
