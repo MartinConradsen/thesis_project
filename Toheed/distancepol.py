@@ -51,6 +51,11 @@ lin_reg_2 = LinearRegression()
 lin_reg_2.fit(X_poly, y)
 print(X)
 
+# prints the coefficients of the polynomial regression model
+print("Polynomial coefficients:", lin_reg_2.coef_)
+print("Intercept:", lin_reg_2.intercept_)
+
+
 # choice of 0.1 instead of 0.01 to make the graph smoother
 X_grid = np.arange(130, 290, 0.1)
 X_grid = X_grid.reshape((len(X_grid), 1))  # reshapes the array to be a matrix
