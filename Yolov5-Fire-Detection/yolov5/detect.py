@@ -220,7 +220,7 @@ def run(
                     x_mid = (coords[0].item() + coords[2].item())/2
                     y_mid = (coords[1].item() + coords[3].item())/2
                     print("Center: ", x_mid, y_mid) # Print center coordinates of fire
-                    if (x_mid > 270 and x_mid < 370) and ((y_mid > 190 and y_mid < 290) or (y_mid > 190 and fireLowOnImage)):
+                    if (x_mid > 295 and x_mid < 345) and ((y_mid > 225 and y_mid < 255) or (y_mid > 225 and fireLowOnImage)):
 
                         if (fireLowOnImage):
                             if (y_mid > 290 and y_mid < 385):
@@ -234,10 +234,11 @@ def run(
                                 serialInst.write('j'.encode('utf-8')) # Stop tilt motor
                                 sys.exit() # Kill program
                             elif (y_mid > 390 and y_mid < 480):
-                                print("Fire super low; releasing projectile in 6 seconds...")
+                                print("Fire super low; releasing projectile in 8 seconds...")
                                 serialInst.write('dd'.encode('utf-8'))
-                                time.sleep(6)
+                                time.sleep(8)
                                 serialInst.write('g'.encode('utf-8')) # Stop holding motor
+                                time.sleep(1)
                                 serialInst.write('j'.encode('utf-8')) # Stop tilt motor
                                 sys.exit() # Kill program
                         else:
@@ -245,6 +246,7 @@ def run(
 
                         # Get back to angle 0
                         current_angle = get_angle(currentStepsForward)
+                        print(current_angle)
                         command = ""
                         for _ in range(currentStepsForward):
                             command += "s"
@@ -283,23 +285,23 @@ def run(
                         serialInst.write('g'.encode('utf-8')) # Stop holding motor
                         serialInst.write('j'.encode('utf-8')) # Stop tilt motor
                         sys.exit() # Kill program
-                    elif (x_mid < 270):
+                    elif (x_mid < 295):
                         print("Moving left")
                         serialInst.write('aa'.encode('utf-8'))
-                    elif (x_mid > 370):
+                    elif (x_mid > 345):
                         print("Moving right")
                         serialInst.write('dd'.encode('utf-8'))
-                    elif (y_mid < 190):
+                    elif (y_mid < 225):
                         print("Moving up")
-                        serialInst.write('ss'.encode('utf-8'))
-                        currentStepsForward -= 2
-                    elif (y_mid > 290):
+                        serialInst.write('s'.encode('utf-8'))
+                        currentStepsForward -= 1
+                    elif (y_mid > 255):
                         if (currentStepsForward == 15):
                             fireLowOnImage = True
                         else:
                             print("Moving down")
-                            serialInst.write('ww'.encode('utf-8'))
-                            currentStepsForward += 2
+                            serialInst.write('w'.encode('utf-8'))
+                            currentStepsForward += 1
 
             else: # No fire detected; sweep for fire a total of 4 rotations
                 if (count < 24):
