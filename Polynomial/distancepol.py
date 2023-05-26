@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.preprocessing import PolynomialFeatures
 
-df = pd.read_csv('datat.csv')
 df2 = pd.read_csv('data.csv')
 
 # calculate the mean of each angle value
