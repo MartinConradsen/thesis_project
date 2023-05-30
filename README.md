@@ -1,4 +1,4 @@
-#Development and Analysis of a Fire Fighting Robot using Extinguishing Projectiles
+# Development and Analysis of a Fire Fighting Robot using Extinguishing Projectiles
 
 This project was used as part of a Master's thesis exploring the use of robotics in creating a fire-extinguishing system capable of extinguishing small, indoor fires with the use of special fire extinguishing balls. 
 
